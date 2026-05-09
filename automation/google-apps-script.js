@@ -13,7 +13,7 @@
 const CONFIG = {
   SHEET_ID: 'YOUR_GOOGLE_SHEET_ID',          // Replace with your Google Sheet ID
   ADMIN_EMAIL: 'smitparmar280@gmail.com',     // Your admin email
-  GEMINI_API_KEY: 'YOUR_GEMINI_API_KEY',      // Free at aistudio.google.com
+  GEMINI_API_KEY: 'AIzaSyDIoT3KzTJK9CTOSR8o2nMf28WHERWzqes',      // Gemini API Key
   SHEET_NAMES: {
     contacts: 'Contacts',
     leads: 'Leads',

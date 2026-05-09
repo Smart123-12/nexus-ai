@@ -139,12 +139,11 @@
 <div class="toast-container"></div>
 <script src="main.js"></script>
 <script>
-document.getElementById('contactForm').addEventListener('submit',function(e){
+document.getElementById('contactForm').addEventListener('submit',async function(e){
   e.preventDefault();
   const btn=this.querySelector('button[type=submit]');
   btn.textContent='Sending...';
   btn.disabled=true;
-  // Simulate Google Sheets submission
   const data={
     firstName:document.getElementById('firstName').value,
     lastName:document.getElementById('lastName').value,
@@ -152,15 +151,13 @@ document.getElementById('contactForm').addEventListener('submit',function(e){
     company:document.getElementById('company').value,
     type:document.getElementById('inquiryType').value,
     message:document.getElementById('message').value,
-    timestamp:new Date().toISOString()
   };
-  // In production: fetch(GOOGLE_SCRIPT_URL,{method:'POST',body:JSON.stringify(data)})
-  console.log('Form data (would submit to Google Sheets):', data);
+  const result = await submitContact(data);
   setTimeout(()=>{
     document.getElementById('contactForm').style.display='none';
     document.getElementById('successMsg').style.display='block';
-    showToast('Message sent successfully!','success');
-  },1500);
+    showToast(result.success?'Message sent successfully!':'Message received! (offline mode)','success');
+  },800);
 });
 function resetForm(){
   document.getElementById('contactForm').style.display='flex';

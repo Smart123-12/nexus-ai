@@ -1,6 +1,79 @@
 /* ============================================================
    NEXUS AI — Global JavaScript Utilities
+   API: https://nexus-ai-backend-lb6o.onrender.com
    ============================================================ */
+
+// ── Backend API URL ──
+const API_BASE = 'https://nexus-ai-backend-lb6o.onrender.com';
+
+// ── Real Gemini AI Chat (with fallback to demo) ──
+async function sendToGemini(message, history=[]) {
+  try {
+    const res = await fetch(API_BASE + '/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history })
+    });
+    const data = await res.json();
+    return data.reply || data.error;
+  } catch(e) {
+    return null; // fallback to local demo response
+  }
+}
+
+// ── Real Contact Form Submission ──
+async function submitContact(formData) {
+  try {
+    const res = await fetch(API_BASE + '/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    return await res.json();
+  } catch(e) {
+    return { success: false, error: e.message };
+  }
+}
+
+// ── Real File Upload ──
+async function uploadFile(file) {
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch(API_BASE + '/api/upload', { method: 'POST', body: fd });
+    return await res.json();
+  } catch(e) {
+    return { success: false, error: e.message };
+  }
+}
+
+// ── Real AI Analysis ──
+async function analyzeWithAI(uploadId, businessData) {
+  try {
+    const res = await fetch(API_BASE + '/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uploadId, businessData })
+    });
+    return await res.json();
+  } catch(e) {
+    return { success: false, error: e.message };
+  }
+}
+
+// ── Generate Report via backend ──
+async function generateReportAPI(type, businessName, industry) {
+  try {
+    const res = await fetch(API_BASE + '/api/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, businessName, industry })
+    });
+    return await res.json();
+  } catch(e) {
+    return { success: false, error: e.message };
+  }
+}
 
 // ── Navbar scroll effect ──
 (function(){

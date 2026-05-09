@@ -136,24 +136,28 @@ function showTyping(){
   msgs.scrollTop=msgs.scrollHeight;
 }
 
-function sendMessage(){
+const chatHistory=[];
+async function sendMessage(){
   const inp=document.getElementById('chatInput');
   const q=inp.value.trim();
   if(!q) return;
-  // Hide chips on first message
   const chipsEl=document.getElementById('chips');
   if(chipsEl) chipsEl.remove();
   addMessage(q,'user');
+  chatHistory.push({role:'user',text:q});
   inp.value='';
   document.getElementById('sendBtn').disabled=true;
   showTyping();
-  const delay=800+Math.random()*1200;
+  // Try real Gemini API first, fallback to demo
+  const realReply = await sendToGemini(q, chatHistory.slice(-6));
   setTimeout(()=>{
     document.getElementById('typing')?.remove();
-    addMessage(findResponse(q),'ai');
+    const reply = realReply || findResponse(q);
+    addMessage(reply,'ai');
+    chatHistory.push({role:'ai',text:reply});
     document.getElementById('sendBtn').disabled=false;
     inp.focus();
-  },delay);
+  },realReply?0:800+Math.random()*800);
 }
 
 function askQuick(q){
