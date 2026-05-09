@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dashboard — Nexus AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="bg-mesh"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--blue-main),var(--blue-navy));display:flex;align-items:center;justify-content:center;color:white;font-size:15px">✦</div>
+    <span style="font-family:var(--font-head);font-weight:800;font-size:1.05rem;color:var(--text-dark)">Nexus<em style="color:var(--blue-navy);font-style:normal">AI</em></span>
+  </div>
+  <nav class="sidebar-nav">
+    <ul>
+      <li><a href="dashboard.html" class="active"><span class="nav-icon">📊</span>Dashboard</a></li>
+      <li><a href="upload.html"><span class="nav-icon">📁</span>Upload Center</a></li>
+      <li><a href="analytics.html"><span class="nav-icon">📈</span>Analytics</a></li>
+      <li><a href="reports.html"><span class="nav-icon">📄</span>AI Reports</a></li>
+      <li><a href="chat.html"><span class="nav-icon">💬</span>AI Assistant</a></li>
+      <li><a href="contact.html"><span class="nav-icon">✉️</span>Contact</a></li>
+      <li><a href="index.html"><span class="nav-icon">🏠</span>Home</a></li>
+    </ul>
+  </nav>
+  <div class="sidebar-footer">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--blue-main);display:flex;align-items:center;justify-content:center;font-size:14px">👤</div>
+      <div><div style="font-size:0.85rem;font-weight:600;color:var(--text-dark)">Demo User</div><div style="font-size:0.75rem;color:var(--text-light)">Growth Plan</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- NAVBAR (top) -->
+<nav class="navbar" style="left:240px;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button onclick="toggleSidebar()" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--text-mid)">☰</button>
+    <div>
+      <div class="dash-title">Dashboard</div>
+      <div class="dash-sub">Last updated: just now · Demo data active</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <div class="ai-badge">AI Active</div>
+    <a href="upload.html" class="btn btn-primary btn-sm">+ Upload File</a>
+  </div>
+</nav>
+
+<div class="dash-layout">
+  <div class="dash-content">
+
+    <!-- KPI CARDS -->
+    <div class="grid-4" style="margin-bottom:1.5rem;" id="kpiGrid"></div>
+
+    <!-- CHARTS ROW -->
+    <div class="grid-2" style="margin-bottom:1.5rem;">
+      <div class="card" style="padding:1.5rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem">Revenue vs Expenses</div>
+          <select class="form-input" style="padding:4px 10px;font-size:0.78rem;width:auto" id="revenueFilter">
+            <option>2025</option><option>2024</option>
+          </select>
+        </div>
+        <canvas id="revenueChart" height="220"></canvas>
+      </div>
+      <div class="card" style="padding:1.5rem;">
+        <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1rem">Revenue by Product</div>
+        <canvas id="productChart" height="220"></canvas>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW -->
+    <div class="grid-2" style="margin-bottom:1.5rem;">
+      <!-- AI Insights -->
+      <div class="card" style="padding:1.5rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem">AI Insights</div>
+          <span class="ai-badge">Gemini</span>
+        </div>
+        <div id="dashInsights" style="display:flex;flex-direction:column;gap:0.75rem;"></div>
+      </div>
+      <!-- Recent Uploads -->
+      <div class="card" style="padding:1.5rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem">Recent Uploads</div>
+          <a href="upload.html" class="btn btn-ghost btn-sm">View All</a>
+        </div>
+        <div id="recentUploads" style="display:flex;flex-direction:column;gap:0.6rem;"></div>
+      </div>
+    </div>
+
+    <!-- CAMPAIGN TABLE -->
+    <div class="card" style="padding:1.5rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem">Ad Campaign Performance</div>
+        <a href="analytics.html" class="btn btn-ghost btn-sm">Full Analytics →</a>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table" id="campaignTable"></table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="main.js"></script>
+<script>
+// KPI Cards
+const kpis=[
+  {icon:'💰',label:'Total Revenue',value:'₹1,05,000',change:'+18.4%',up:true,count:105000,prefix:'₹',suffix:''},
+  {icon:'👥',label:'Total Customers',value:'4,289',change:'+12.1%',up:true,count:4289,prefix:'',suffix:''},
+  {icon:'🎯',label:'Conversion Rate',value:'6.8%',change:'+0.9%',up:true,count:6.8,prefix:'',suffix:'%'},
+  {icon:'📉',label:'Churn Rate',value:'2.1%',change:'-0.4%',up:false,count:2.1,prefix:'',suffix:'%'},
+];
+document.getElementById('kpiGrid').innerHTML=kpis.map((k,i)=>`
+  <div class="kpi-card">
+    <div class="kpi-icon">${k.icon}</div>
+    <div class="kpi-value" data-count="${k.count}" data-prefix="${k.prefix}" data-suffix="${k.suffix}">${k.value}</div>
+    <div class="kpi-label">${k.label}</div>
+    <div class="kpi-change ${k.up?'up':'down'}">${k.up?'▲':'▼'} ${k.change}</div>
+  </div>`).join('');
+
+// Revenue chart
+const rev=[42,51,47,63,58,72,68,81,75,92,88,105];
+const exp=[28,31,27,38,34,41,39,44,40,49,47,55];
+const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+new Chart(document.getElementById('revenueChart'),{
+  type:'bar',
+  data:{labels:months,datasets:[
+    {label:'Revenue',data:rev,backgroundColor:'rgba(107,143,179,0.7)',borderRadius:6},
+    {label:'Expenses',data:exp,backgroundColor:'rgba(167,199,231,0.5)',borderRadius:6}
+  ]},
+  options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid:{color:'rgba(167,199,231,0.2)'}}}}
+});
+
+// Product doughnut
+new Chart(document.getElementById('productChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Pro Plan','Starter','Enterprise','Add-ons'],
+    datasets:[{data:[42,18,35,8.5],backgroundColor:['#6B8FB3','#A7C7E7','#3D6A9A','#D6EAF8'],borderWidth:0}]
+  },
+  options:{responsive:true,plugins:{legend:{position:'right'}},cutout:'68%'}
+});
+
+// AI Insights
+const insights=[
+  {icon:'📈',title:'Revenue Surge',desc:'Q4 revenue up 18.4% — Enterprise upsells accelerating.',type:'success'},
+  {icon:'⚠️',title:'Churn Risk',desc:'Starter plan churn up. Launch re-engagement sequence.',type:'warning'},
+  {icon:'💡',title:'Ad Opportunity',desc:'Instagram CPC lowest ($0.65). Reallocate 30% budget.',type:'info'},
+  {icon:'🎯',title:'Enterprise Growth',desc:'Enterprise segment +41%. Launch premium tier.',type:'success'},
+];
+document.getElementById('dashInsights').innerHTML=insights.map(i=>`
+  <div style="display:flex;gap:10px;align-items:flex-start;padding:0.75rem;background:var(--blue-ice);border-radius:10px;">
+    <span style="font-size:1.1rem;flex-shrink:0">${i.icon}</span>
+    <div>
+      <div style="font-size:0.85rem;font-weight:700;color:var(--text-dark)">${i.title}</div>
+      <div style="font-size:0.78rem;color:var(--text-mid);margin-top:2px">${i.desc}</div>
+    </div>
+  </div>`).join('');
+
+// Recent uploads
+const uploads=[
+  {name:'Q4_Revenue_Report.xlsx',date:'2 mins ago',status:'Analyzed',icon:'📊'},
+  {name:'Marketing_Data.csv',date:'1 hour ago',status:'Analyzed',icon:'📈'},
+  {name:'Business_Plan.pdf',date:'Yesterday',status:'Analyzed',icon:'📄'},
+  {name:'Sales_Forecast.docx',date:'2 days ago',status:'Pending',icon:'📝'},
+];
+document.getElementById('recentUploads').innerHTML=uploads.map(u=>`
+  <div style="display:flex;align-items:center;gap:10px;padding:0.65rem;border-radius:10px;background:var(--blue-ice);">
+    <span style="font-size:1.2rem">${u.icon}</span>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:0.83rem;font-weight:600;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.name}</div>
+      <div style="font-size:0.75rem;color:var(--text-light)">${u.date}</div>
+    </div>
+    <span class="badge ${u.status==='Analyzed'?'badge-green':'badge-orange'}" style="font-size:0.72rem">${u.status}</span>
+  </div>`).join('');
+
+// Campaign table
+const campaigns=[
+  {name:'Google Ads',spend:'₹28,000',clicks:'14,200',ctr:'4.2%',cpc:'₹1.97',conv:482,roas:'6.8x'},
+  {name:'Facebook Ads',spend:'₹19,000',clicks:'22,100',ctr:'2.8%',cpc:'₹0.86',conv:311,roas:'4.9x'},
+  {name:'Instagram Ads',spend:'₹12,000',clicks:'18,400',ctr:'3.5%',cpc:'₹0.65',conv:224,roas:'5.3x'},
+  {name:'Bing Ads',spend:'₹6,500',clicks:'5,900',ctr:'3.1%',cpc:'₹1.10',conv:98,roas:'3.2x'},
+];
+document.getElementById('campaignTable').innerHTML=`
+  <thead><tr>${['Campaign','Spend','Clicks','CTR','CPC','Conversions','ROAS'].map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+  <tbody>${campaigns.map(c=>`
+    <tr>
+      <td><strong>${c.name}</strong></td>
+      <td>${c.spend}</td><td>${c.clicks}</td>
+      <td><span class="badge badge-blue">${c.ctr}</span></td>
+      <td>${c.cpc}</td><td>${c.conv}</td>
+      <td><span class="badge badge-green">${c.roas}</span></td>
+    </tr>`).join('')}
+  </tbody>`;
+
+showToast('Dashboard loaded with demo data','info');
+</script>
+</body>
+</html>

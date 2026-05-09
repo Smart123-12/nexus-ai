@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Contact — Nexus AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<div class="blob blob-1"></div><div class="blob blob-2"></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">✦</div>
+    <span>Nexus<em>AI</em></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="analytics.html">Analytics</a></li>
+    <li><a href="upload.html">Upload</a></li>
+    <li><a href="reports.html">Reports</a></li>
+    <li><a href="chat.html">AI Chat</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+    <a href="dashboard.html" class="btn btn-primary btn-sm">Get Started</a>
+  </div>
+</nav>
+
+<section style="padding:8rem 2.5rem 4rem;">
+  <div class="container" style="max-width:1000px;">
+    <div style="text-align:center;margin-bottom:3rem;">
+      <div class="section-label">Contact Us</div>
+      <h1 class="section-title">Let's Build Something <span>Amazing</span></h1>
+      <p class="section-sub" style="margin:0 auto">Have questions? Want a demo? Our team responds within 24 hours.</p>
+    </div>
+
+    <div class="grid-2" style="gap:3rem;align-items:start;">
+      <!-- Form -->
+      <div class="card" style="padding:2rem;">
+        <div style="font-family:var(--font-head);font-weight:700;font-size:1rem;margin-bottom:1.5rem">📬 Send Us a Message</div>
+        <form id="contactForm" style="display:flex;flex-direction:column;gap:1.2rem;">
+          <div class="grid-2" style="gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input class="form-input" type="text" id="firstName" placeholder="John" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input class="form-input" type="text" id="lastName" placeholder="Doe" required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" id="email" placeholder="john@company.com" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company</label>
+            <input class="form-input" type="text" id="company" placeholder="Your Company"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Inquiry Type</label>
+            <select class="form-input" id="inquiryType">
+              <option>Request a Demo</option>
+              <option>Sales Inquiry</option>
+              <option>Technical Support</option>
+              <option>Partnership</option>
+              <option>General Question</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-input" id="message" rows="4" placeholder="Tell us about your business and what you need..." style="resize:vertical" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">🚀 Send Message</button>
+        </form>
+
+        <!-- Success state -->
+        <div id="successMsg" style="display:none;text-align:center;padding:2rem;">
+          <div style="font-size:3rem;margin-bottom:1rem">✅</div>
+          <h3 style="font-family:var(--font-head);font-weight:700;margin-bottom:0.5rem">Message Sent!</h3>
+          <p style="color:var(--text-mid);font-size:0.88rem">We'll get back to you within 24 hours. Check your email for confirmation.</p>
+          <button class="btn btn-outline" style="margin-top:1rem" onclick="resetForm()">Send Another</button>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div>
+        <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1.2rem">📞 Contact Information</div>
+          <div style="display:flex;flex-direction:column;gap:1rem;">
+            <div style="display:flex;gap:12px;align-items:center;">
+              <div style="width:40px;height:40px;border-radius:10px;background:var(--blue-ice);display:flex;align-items:center;justify-content:center;font-size:18px">📧</div>
+              <div><div style="font-size:0.82rem;font-weight:600;color:var(--text-dark)">Email</div><div style="font-size:0.85rem;color:var(--text-mid)">support@nexusai.in</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;">
+              <div style="width:40px;height:40px;border-radius:10px;background:var(--blue-ice);display:flex;align-items:center;justify-content:center;font-size:18px">📱</div>
+              <div><div style="font-size:0.82rem;font-weight:600;color:var(--text-dark)">Phone</div><div style="font-size:0.85rem;color:var(--text-mid)">+91 98765 43210</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;">
+              <div style="width:40px;height:40px;border-radius:10px;background:var(--blue-ice);display:flex;align-items:center;justify-content:center;font-size:18px">📍</div>
+              <div><div style="font-size:0.82rem;font-weight:600;color:var(--text-dark)">Location</div><div style="font-size:0.85rem;color:var(--text-mid)">Ahmedabad, Gujarat, India</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;">
+              <div style="width:40px;height:40px;border-radius:10px;background:var(--blue-ice);display:flex;align-items:center;justify-content:center;font-size:18px">⏰</div>
+              <div><div style="font-size:0.82rem;font-weight:600;color:var(--text-dark)">Response Time</div><div style="font-size:0.85rem;color:var(--text-mid)">Within 24 hours</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;background:linear-gradient(135deg,var(--blue-ice),var(--blue-sky));">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:0.75rem">🎯 Book a Demo</div>
+          <p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:1rem">See Nexus AI in action with a live 30-minute personalized demo.</p>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="showToast('Demo booking — coming soon!','info')">📅 Schedule Demo Call</button>
+        </div>
+
+        <div class="card" style="padding:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1rem">🌐 Follow Us</div>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+            <a href="#" class="btn btn-ghost btn-sm" onclick="showToast('Opening LinkedIn...','info')">LinkedIn</a>
+            <a href="#" class="btn btn-ghost btn-sm" onclick="showToast('Opening Twitter...','info')">Twitter</a>
+            <a href="https://github.com/Smart123-12" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
+            <a href="#" class="btn btn-ghost btn-sm" onclick="showToast('Opening YouTube...','info')">YouTube</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer style="border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--text-light);font-size:0.85rem;">
+  <p>© 2025 Nexus AI. All rights reserved.</p>
+</footer>
+
+<div class="toast-container"></div>
+<script src="main.js"></script>
+<script>
+document.getElementById('contactForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const btn=this.querySelector('button[type=submit]');
+  btn.textContent='Sending...';
+  btn.disabled=true;
+  // Simulate Google Sheets submission
+  const data={
+    firstName:document.getElementById('firstName').value,
+    lastName:document.getElementById('lastName').value,
+    email:document.getElementById('email').value,
+    company:document.getElementById('company').value,
+    type:document.getElementById('inquiryType').value,
+    message:document.getElementById('message').value,
+    timestamp:new Date().toISOString()
+  };
+  // In production: fetch(GOOGLE_SCRIPT_URL,{method:'POST',body:JSON.stringify(data)})
+  console.log('Form data (would submit to Google Sheets):', data);
+  setTimeout(()=>{
+    document.getElementById('contactForm').style.display='none';
+    document.getElementById('successMsg').style.display='block';
+    showToast('Message sent successfully!','success');
+  },1500);
+});
+function resetForm(){
+  document.getElementById('contactForm').style.display='flex';
+  document.getElementById('contactForm').reset();
+  document.getElementById('successMsg').style.display='none';
+  document.querySelector('button[type=submit]').textContent='🚀 Send Message';
+  document.querySelector('button[type=submit]').disabled=false;
+}
+</script>
+</body>
+</html>

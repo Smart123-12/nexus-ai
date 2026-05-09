@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI Assistant — Nexus AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--blue-main),var(--blue-navy));display:flex;align-items:center;justify-content:center;color:white;font-size:15px">✦</div>
+    <span style="font-family:var(--font-head);font-weight:800;font-size:1.05rem;color:var(--text-dark)">Nexus<em style="color:var(--blue-navy);font-style:normal">AI</em></span>
+  </div>
+  <nav class="sidebar-nav"><ul>
+    <li><a href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a></li>
+    <li><a href="upload.html"><span class="nav-icon">📁</span>Upload Center</a></li>
+    <li><a href="analytics.html"><span class="nav-icon">📈</span>Analytics</a></li>
+    <li><a href="reports.html"><span class="nav-icon">📄</span>AI Reports</a></li>
+    <li><a href="chat.html" class="active"><span class="nav-icon">💬</span>AI Assistant</a></li>
+    <li><a href="contact.html"><span class="nav-icon">✉️</span>Contact</a></li>
+    <li><a href="index.html"><span class="nav-icon">🏠</span>Home</a></li>
+  </ul>
+  <div style="padding:1rem;margin-top:auto;">
+    <div style="font-size:0.78rem;font-weight:600;color:var(--text-light);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.06em">Suggested</div>
+    <div id="suggested" style="display:flex;flex-direction:column;gap:4px;"></div>
+  </div>
+  </nav>
+</aside>
+
+<nav class="navbar" style="left:240px;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue-main),var(--blue-navy));display:flex;align-items:center;justify-content:center;font-size:16px">🤖</div>
+    <div>
+      <div class="dash-title">AI Business Assistant</div>
+      <div class="dash-sub">Powered by Gemini · Using demo business data</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:1rem;">
+    <button class="btn btn-ghost btn-sm" onclick="clearChat()">🗑 Clear Chat</button>
+    <button class="btn btn-outline btn-sm" onclick="exportChat()">⬇ Export</button>
+  </div>
+</nav>
+
+<div class="dash-layout">
+  <div class="dash-content" style="padding-top:84px;display:flex;flex-direction:column;height:100vh;">
+    <!-- Chat -->
+    <div style="flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:1rem;" id="chatMessages">
+      <!-- Welcome -->
+      <div style="text-align:center;padding:2rem 0;">
+        <div style="font-size:3rem;margin-bottom:0.75rem">🤖</div>
+        <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--text-dark);margin-bottom:0.5rem">Hello! I'm your AI Business Assistant</div>
+        <p style="color:var(--text-mid);font-size:0.88rem;max-width:420px;margin:0 auto">I have access to your business data. Ask me anything about revenue, marketing, growth strategies, or business decisions.</p>
+      </div>
+      <!-- Suggestion chips -->
+      <div style="display:flex;flex-wrap:wrap;gap:0.6rem;justify-content:center;" id="chips"></div>
+    </div>
+
+    <!-- Input -->
+    <div style="padding:1rem;border-top:1px solid var(--border);background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);">
+      <div style="display:flex;gap:10px;max-width:900px;margin:0 auto;">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Ask about revenue, marketing, growth, risks..." onkeydown="if(event.key==='Enter')sendMessage()"/>
+        <button class="btn btn-primary" onclick="sendMessage()" id="sendBtn">
+          <span id="sendIcon">➤</span>
+        </button>
+      </div>
+      <div style="text-align:center;font-size:0.72rem;color:var(--text-light);margin-top:6px">Nexus AI may make mistakes. Verify important decisions independently.</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="main.js"></script>
+<script>
+const chips=['Which product performs best?','What business risks exist?','How can I improve sales?','Which ad campaign has best ROAS?','Should I increase pricing?','What opportunities should I focus on?'];
+document.getElementById('chips').innerHTML=chips.map(c=>`
+  <button class="btn btn-outline btn-sm" onclick="askQuick('${c}')" style="font-size:0.8rem">${c}</button>`).join('');
+
+const suggestedQs=['Revenue forecast Q1','Churn reduction tips','Budget reallocation','Product roadmap ideas'];
+document.getElementById('suggested').innerHTML=suggestedQs.map(q=>`
+  <button onclick="askQuick('${q}')" style="text-align:left;background:none;border:none;cursor:pointer;padding:4px 0;font-size:0.78rem;color:var(--text-mid);transition:color 0.2s" onmouseover="this.style.color='var(--blue-deep)'" onmouseout="this.style.color='var(--text-mid)'">→ ${q}</button>`).join('');
+
+// Gemini-like responses
+const responses={
+  'which product performs best':()=>`📊 <strong>Top Performer: Enterprise Plan</strong><br><br>Based on your business data:<br>• <strong>Enterprise Plan</strong>: ₹35,000 revenue, +41% growth — highest growth rate<br>• <strong>Pro Plan</strong>: ₹42,000 revenue, +22% growth — highest absolute revenue<br>• <strong>Starter Plan</strong>: ₹18,000 revenue, +8% growth — high volume, lower margin<br><br><strong>Recommendation:</strong> Prioritize Enterprise segment with a dedicated CSM and premium tier at ₹7,999/month. Upsell Starter users to Pro with a limited-time offer.`,
+  'what business risks exist':()=>`⚠️ <strong>Key Business Risks Identified</strong><br><br>1. <strong>Churn Risk (High)</strong> — Starter plan churn up 0.4%. Risk of cascading revenue loss if unaddressed.<br>2. <strong>Ad Dependency</strong> — 43% of ad budget on Google Ads. Single-platform risk if CPC rises further.<br>3. <strong>Market Competition</strong> — Growing SMB analytics space with new entrants quarterly.<br>4. <strong>Revenue Concentration</strong> — Enterprise segment is 33% of revenue but only 14 clients.<br><br><strong>Priority Actions:</strong> Launch Starter re-engagement campaign, diversify ad platforms, sign multi-year contracts with Enterprise clients.`,
+  'how can i improve sales':()=>`🚀 <strong>Sales Improvement Roadmap</strong><br><br><strong>Quick Wins (This Month):</strong><br>• Retarget trial users who didn't convert (estimated +18% conversion lift)<br>• Add annual billing option with 2-month discount (boosts ARR 15-20%)<br>• Launch referral program for Pro users (avg referral rate: 3.2 customers/user)<br><br><strong>Medium-term (90 Days):</strong><br>• Build a self-serve onboarding flow to reduce time-to-value<br>• Launch case study content for Enterprise segment<br>• Test ₹999 → ₹799 A/B price for Starter to reduce churn<br><br><strong>Projected Impact:</strong> +25-35% MRR growth over 90 days`,
+  'which ad campaign has best roas':()=>`📣 <strong>Ad Campaign ROAS Analysis</strong><br><br>| Platform | ROAS | Spend | Conversions |<br>|---|---|---|---|<br>| 🥇 Google Ads | <strong>6.8x</strong> | ₹28,000 | 482 |<br>| 🥈 Instagram Ads | <strong>5.3x</strong> | ₹12,000 | 224 |<br>| 🥉 Facebook Ads | <strong>4.9x</strong> | ₹19,000 | 311 |<br>| Bing Ads | 3.2x | ₹6,500 | 98 |<br><br><strong>Recommendation:</strong> Google Ads has the best ROAS at 6.8x. Increase budget by ₹8,000. Pause Bing Ads and reallocate to Instagram which shows best CPC efficiency at ₹0.65.`,
+  'should i increase pricing':()=>`💰 <strong>Pricing Strategy Analysis</strong><br><br>Based on your metrics:<br>• Current conversion rate (6.8%) is well above industry avg (3.2%) — indicates room for price increase<br>• Churn at 2.1% — healthy, suggests strong product-market fit<br>• Enterprise ROAS 6.8x — customers seeing strong ROI<br><br><strong>Recommendation: Yes, increase pricing selectively</strong><br>• Starter: ₹299 → ₹399/month (+33%) — low churn risk given value delivered<br>• Pro: ₹999 → ₹1,299/month (+30%) — test with new signups first<br>• Enterprise: Introduce ₹9,999/month tier with dedicated features<br><br><strong>Expected impact:</strong> +22-28% MRR with <5% additional churn.`,
+  'what opportunities should i focus on':()=>`🌟 <strong>Top Business Opportunities</strong><br><br>1. <strong>🎯 Enterprise Expansion (Priority #1)</strong><br>   41% growth rate with high LTV. Launch premium tier + CSM program.<br><br>2. <strong>📱 Instagram Ad Scale-up</strong><br>   Lowest CPC (₹0.65) with 5.3x ROAS. Reallocate 30% budget here.<br><br>3. <strong>🔄 Annual Plan Launch</strong><br>   Offer 2-months-free annual billing. Expected: +18% ARR boost.<br><br>4. <strong>🌍 Geographic Expansion</strong><br>   Current data shows Tier-1 city concentration. Tier-2 cities underserved.<br><br>5. <strong>🤝 Partner Program</strong><br>   Launch agency/reseller partnerships — 40% margin with zero CAC.<br><br><strong>Quick Win:</strong> Focus on #1 and #3 for fastest revenue impact.`,
+};
+
+function findResponse(q){
+  const lower=q.toLowerCase();
+  for(const [key,fn] of Object.entries(responses)){
+    if(lower.includes(key.split(' ')[0])||lower.includes(key.split(' ')[1]||key)){
+      if(key.split(' ').some(w=>lower.includes(w))) return fn();
+    }
+  }
+  return generateGenericResponse(q);
+}
+
+function generateGenericResponse(q){
+  const r=[
+    `Based on your business data, <strong>${q}</strong> is an important consideration. Your current metrics show strong performance with 18.4% revenue growth and 6.8% conversion rate — well above industry benchmarks. I recommend focusing on Enterprise segment expansion and Instagram ad optimization for the highest ROI.`,
+    `Great question about <strong>${q}</strong>! Your data indicates positive momentum with ₹1.05M quarterly revenue. The key opportunity lies in your Enterprise segment (+41% growth) and reducing Starter plan churn. Would you like me to generate a detailed report on this topic?`,
+    `Analyzing your business data for <strong>${q}</strong>... Your conversion funnel shows 48,200 visitors converting at 6.8% — excellent performance. The main leverage point is your ad spend mix: reallocating from Bing Ads to Google Ads could yield an additional ₹12,000-₹18,000 in monthly revenue.`,
+  ];
+  return r[Math.floor(Math.random()*r.length)];
+}
+
+function addMessage(text,role){
+  const msgs=document.getElementById('chatMessages');
+  const div=document.createElement('div');
+  div.style.cssText=`display:flex;${role==='user'?'justify-content:flex-end':'justify-content:flex-start'};`;
+  div.innerHTML=`
+    ${role==='ai'?'<div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--blue-main),var(--blue-navy));display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:4px">🤖</div>':''}
+    <div class="chat-bubble ${role}" style="max-width:80%">${text}</div>
+    ${role==='user'?'<div style="width:30px;height:30px;border-radius:50%;background:var(--blue-ice);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:4px">👤</div>':''}`;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showTyping(){
+  const msgs=document.getElementById('chatMessages');
+  const div=document.createElement('div');
+  div.id='typing';
+  div.style.cssText='display:flex;justify-content:flex-start;gap:8px;align-items:center;';
+  div.innerHTML=`<div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--blue-main),var(--blue-navy));display:flex;align-items:center;justify-content:center;font-size:13px">🤖</div>
+    <div style="padding:0.85rem 1.1rem;background:white;border:1px solid var(--border);border-radius:18px 18px 18px 4px;box-shadow:var(--shadow-sm)">
+      <div style="display:flex;gap:4px;align-items:center;"><span style="width:7px;height:7px;border-radius:50%;background:var(--blue-main);animation:pulse 1.2s ease infinite;display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:var(--blue-main);animation:pulse 1.2s ease 0.2s infinite;display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:var(--blue-main);animation:pulse 1.2s ease 0.4s infinite;display:inline-block"></span></div>
+    </div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function sendMessage(){
+  const inp=document.getElementById('chatInput');
+  const q=inp.value.trim();
+  if(!q) return;
+  // Hide chips on first message
+  const chipsEl=document.getElementById('chips');
+  if(chipsEl) chipsEl.remove();
+  addMessage(q,'user');
+  inp.value='';
+  document.getElementById('sendBtn').disabled=true;
+  showTyping();
+  const delay=800+Math.random()*1200;
+  setTimeout(()=>{
+    document.getElementById('typing')?.remove();
+    addMessage(findResponse(q),'ai');
+    document.getElementById('sendBtn').disabled=false;
+    inp.focus();
+  },delay);
+}
+
+function askQuick(q){
+  document.getElementById('chatInput').value=q;
+  sendMessage();
+}
+
+function clearChat(){
+  document.getElementById('chatMessages').innerHTML='<div style="text-align:center;padding:2rem;color:var(--text-light)"><div style="font-size:2rem;margin-bottom:0.5rem">💬</div><p>Chat cleared. Ask me anything!</p></div>';
+}
+
+function exportChat(){
+  showToast('Chat exported as PDF','success');
+}
+</script>
+</body>
+</html>

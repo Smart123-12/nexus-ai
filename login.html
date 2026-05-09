@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Login / Register — Nexus AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<div class="blob blob-1"></div><div class="blob blob-2"></div>
+
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;">
+  <div style="width:100%;max-width:440px;">
+
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:2rem;">
+      <a href="index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px;justify-content:center;">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--blue-main),var(--blue-navy));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:var(--shadow-md)">✦</div>
+        <span style="font-family:var(--font-head);font-weight:800;font-size:1.5rem;color:var(--text-dark)">Nexus<em style="color:var(--blue-navy);font-style:normal">AI</em></span>
+      </a>
+      <p style="color:var(--text-light);font-size:0.85rem;margin-top:0.75rem">AI-Powered Business Intelligence</p>
+    </div>
+
+    <!-- Tab switch -->
+    <div class="tab-nav" style="margin-bottom:1.5rem;">
+      <button class="tab-btn active" id="loginTab" onclick="switchAuthTab('login')">Login</button>
+      <button class="tab-btn" id="registerTab" onclick="switchAuthTab('register')">Register</button>
+    </div>
+
+    <!-- Login form -->
+    <div class="card" style="padding:2rem;" id="loginForm">
+      <h2 style="font-family:var(--font-head);font-size:1.3rem;font-weight:800;margin-bottom:0.4rem;color:var(--text-dark)">Welcome back 👋</h2>
+      <p style="color:var(--text-light);font-size:0.85rem;margin-bottom:1.5rem">Sign in to your Nexus AI account</p>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" id="loginEmail" placeholder="you@company.com" value="demo@nexusai.in"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div style="position:relative;">
+            <input class="form-input" type="password" id="loginPassword" placeholder="••••••••" value="demo1234" style="width:100%;padding-right:3rem"/>
+            <button onclick="togglePwd('loginPassword',this)" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light)">👁</button>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--text-mid);cursor:pointer">
+            <input type="checkbox" checked style="accent-color:var(--blue-navy)"/> Remember me
+          </label>
+          <a href="#" style="font-size:0.82rem;color:var(--blue-navy);text-decoration:none">Forgot password?</a>
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doLogin()">Sign In →</button>
+        <div style="text-align:center;font-size:0.8rem;color:var(--text-light)">— or continue with —</div>
+        <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="doGoogleLogin()">
+          <span style="font-size:1rem">🌐</span> Continue with Google
+        </button>
+      </div>
+      <div style="margin-top:1.2rem;padding:0.85rem;background:var(--blue-ice);border-radius:10px;font-size:0.82rem;color:var(--text-mid)">
+        🎯 <strong>Demo credentials:</strong> demo@nexusai.in / demo1234
+      </div>
+    </div>
+
+    <!-- Register form -->
+    <div class="card" style="padding:2rem;display:none;" id="registerForm">
+      <h2 style="font-family:var(--font-head);font-size:1.3rem;font-weight:800;margin-bottom:0.4rem;color:var(--text-dark)">Create Account ✦</h2>
+      <p style="color:var(--text-light);font-size:0.85rem;margin-bottom:1.5rem">Start your free 14-day trial. No credit card required.</p>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div class="grid-2" style="gap:0.75rem;">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input class="form-input" type="text" id="regFirst" placeholder="John"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input class="form-input" type="text" id="regLast" placeholder="Doe"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Work Email</label>
+          <input class="form-input" type="email" id="regEmail" placeholder="you@company.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Company Name</label>
+          <input class="form-input" type="text" id="regCompany" placeholder="Your Company"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="regPassword" placeholder="Min 8 characters"/>
+        </div>
+        <div id="pwdStrength" style="height:4px;border-radius:2px;background:var(--blue-ice);overflow:hidden;"><div id="pwdFill" style="height:100%;width:0;background:var(--blue-navy);border-radius:2px;transition:all 0.3s"></div></div>
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:0.82rem;color:var(--text-mid);cursor:pointer">
+          <input type="checkbox" id="agreeTerms" style="accent-color:var(--blue-navy);margin-top:2px"/>
+          I agree to the <a href="#" style="color:var(--blue-navy)">Terms of Service</a> and <a href="#" style="color:var(--blue-navy)">Privacy Policy</a>
+        </label>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doRegister()">Create Free Account →</button>
+        <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="doGoogleLogin()">
+          <span>🌐</span> Sign up with Google
+        </button>
+      </div>
+    </div>
+
+    <p style="text-align:center;font-size:0.78rem;color:var(--text-light);margin-top:1.5rem">
+      <a href="index.html" style="color:var(--blue-navy);text-decoration:none">← Back to Home</a>
+    </p>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="main.js"></script>
+<script>
+function switchAuthTab(tab){
+  document.getElementById('loginForm').style.display = tab==='login'?'block':'none';
+  document.getElementById('registerForm').style.display = tab==='register'?'block':'none';
+  document.getElementById('loginTab').classList.toggle('active', tab==='login');
+  document.getElementById('registerTab').classList.toggle('active', tab==='register');
+}
+function togglePwd(id,btn){
+  const inp=document.getElementById(id);
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
+  else{inp.type='password';btn.textContent='👁';}
+}
+function doLogin(){
+  const e=document.getElementById('loginEmail').value;
+  const p=document.getElementById('loginPassword').value;
+  if(!e||!p){showToast('Please fill all fields','error');return;}
+  showToast('Signing in...','info');
+  setTimeout(()=>{showToast('Welcome back! Redirecting...','success');setTimeout(()=>location.href='dashboard.html',1000);},1200);
+}
+function doGoogleLogin(){
+  showToast('Google OAuth — configure in production','info');
+  setTimeout(()=>location.href='dashboard.html',1500);
+}
+function doRegister(){
+  if(!document.getElementById('agreeTerms').checked){showToast('Please agree to Terms','error');return;}
+  const e=document.getElementById('regEmail').value;
+  const p=document.getElementById('regPassword').value;
+  if(!e||!p){showToast('Please fill all required fields','error');return;}
+  showToast('Creating your account...','info');
+  setTimeout(()=>{showToast('Account created! Welcome to Nexus AI!','success');setTimeout(()=>location.href='dashboard.html',1000);},1500);
+}
+// Password strength
+document.getElementById('regPassword')?.addEventListener('input',function(){
+  const v=this.value;
+  const strength=v.length>10&&/[A-Z]/.test(v)&&/[0-9]/.test(v)?100:v.length>6?60:v.length>2?30:0;
+  const fill=document.getElementById('pwdFill');
+  fill.style.width=strength+'%';
+  fill.style.background=strength>70?'#22c55e':strength>40?'#f59e0b':'#f43f5e';
+});
+</script>
+</body>
+</html>

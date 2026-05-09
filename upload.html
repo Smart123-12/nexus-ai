@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Upload Center — Nexus AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="bg-mesh"></div>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--blue-main),var(--blue-navy));display:flex;align-items:center;justify-content:center;color:white;font-size:15px">✦</div>
+    <span style="font-family:var(--font-head);font-weight:800;font-size:1.05rem;color:var(--text-dark)">Nexus<em style="color:var(--blue-navy);font-style:normal">AI</em></span>
+  </div>
+  <nav class="sidebar-nav">
+    <ul>
+      <li><a href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a></li>
+      <li><a href="upload.html" class="active"><span class="nav-icon">📁</span>Upload Center</a></li>
+      <li><a href="analytics.html"><span class="nav-icon">📈</span>Analytics</a></li>
+      <li><a href="reports.html"><span class="nav-icon">📄</span>AI Reports</a></li>
+      <li><a href="chat.html"><span class="nav-icon">💬</span>AI Assistant</a></li>
+      <li><a href="contact.html"><span class="nav-icon">✉️</span>Contact</a></li>
+      <li><a href="index.html"><span class="nav-icon">🏠</span>Home</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<nav class="navbar" style="left:240px;">
+  <div><div class="dash-title">Upload Center</div><div class="dash-sub">Upload & analyze your business files with AI</div></div>
+  <div style="display:flex;gap:1rem;align-items:center;">
+    <div class="ai-badge">AI Ready</div>
+    <a href="dashboard.html" class="btn btn-outline btn-sm">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="dash-layout">
+  <div class="dash-content">
+
+    <div class="grid-2" style="margin-bottom:1.5rem;align-items:start;">
+      <!-- Upload Zone -->
+      <div>
+        <div class="card" style="padding:2rem;margin-bottom:1.5rem;">
+          <div id="uploadZone" class="upload-zone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon" id="uploadIcon">📁</div>
+            <h3>Drag & Drop Your Business Files</h3>
+            <p>Supports PDF, XLSX, CSV, DOCX · Max 50MB per file</p>
+            <div style="display:flex;gap:0.75rem;justify-content:center;margin-top:1.2rem;flex-wrap:wrap;">
+              <span class="badge badge-blue">PDF</span>
+              <span class="badge badge-blue">XLSX</span>
+              <span class="badge badge-blue">CSV</span>
+              <span class="badge badge-blue">DOCX</span>
+            </div>
+            <button class="btn btn-primary" style="margin-top:1.2rem" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Choose Files</button>
+            <input type="file" id="fileInput" multiple accept=".pdf,.xlsx,.csv,.docx" style="display:none" onchange="handleFiles(this.files)"/>
+          </div>
+        </div>
+
+        <!-- Upload Progress -->
+        <div id="uploadProgress" style="display:none;" class="card" style="padding:1.5rem;">
+          <div style="padding:1.5rem;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;">
+              <div class="spinner"></div>
+              <div>
+                <div style="font-weight:700;font-size:0.9rem;color:var(--text-dark)" id="uploadFileName">Uploading...</div>
+                <div style="font-size:0.78rem;color:var(--text-light)" id="uploadStatus">Extracting data...</div>
+              </div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            <div style="text-align:right;font-size:0.78rem;color:var(--text-light);margin-top:4px" id="progressPct">0%</div>
+          </div>
+        </div>
+
+        <!-- AI Analysis Result -->
+        <div id="analysisResult" style="display:none;" class="card" style="padding:1.5rem;">
+          <div style="padding:1.5rem;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
+              <span style="font-size:1.4rem">🤖</span>
+              <div style="font-family:var(--font-head);font-weight:700;font-size:1rem">AI Analysis Complete</div>
+              <span class="badge badge-green">Done</span>
+            </div>
+            <div id="analysisContent" style="font-size:0.88rem;color:var(--text-mid);line-height:1.7;"></div>
+            <div style="display:flex;gap:0.75rem;margin-top:1.2rem;flex-wrap:wrap;">
+              <a href="reports.html" class="btn btn-primary btn-sm">View Full Report</a>
+              <a href="dashboard.html" class="btn btn-outline btn-sm">See Dashboard</a>
+              <button class="btn btn-ghost btn-sm" onclick="resetUpload()">Upload Another</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload History + Tips -->
+      <div>
+        <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1rem">📂 Upload History</div>
+          <div id="uploadHistory" style="display:flex;flex-direction:column;gap:0.6rem;"></div>
+        </div>
+
+        <div class="card" style="padding:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1rem">💡 What AI Detects</div>
+          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <div style="display:flex;gap:10px;align-items:center;"><span>📈</span><span style="font-size:0.85rem;color:var(--text-mid)">Revenue trends & growth patterns</span></div>
+            <div style="display:flex;gap:10px;align-items:center;"><span>⚠️</span><span style="font-size:0.85rem;color:var(--text-mid)">Business risks & anomalies</span></div>
+            <div style="display:flex;gap:10px;align-items:center;"><span>💡</span><span style="font-size:0.85rem;color:var(--text-mid)">Growth opportunities</span></div>
+            <div style="display:flex;gap:10px;align-items:center;"><span>🎯</span><span style="font-size:0.85rem;color:var(--text-mid)">Marketing & ad performance</span></div>
+            <div style="display:flex;gap:10px;align-items:center;"><span>📊</span><span style="font-size:0.85rem;color:var(--text-mid)">KPI benchmarks & comparisons</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Use Demo Data -->
+    <div class="card" style="padding:1.5rem;background:linear-gradient(135deg,var(--blue-ice),var(--blue-sky));">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <div style="font-family:var(--font-head);font-weight:700;margin-bottom:4px">🎯 Don't have a file? Try with Demo Data</div>
+          <p style="font-size:0.85rem;color:var(--text-mid)">Analyze a pre-loaded sample business dataset to see all AI features in action.</p>
+        </div>
+        <button class="btn btn-primary" onclick="loadDemoData()">Load Demo Dataset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="main.js"></script>
+<script>
+const historyData=[
+  {name:'Q4_Revenue_Report.xlsx',size:'2.4 MB',date:'2 mins ago',status:'Analyzed',icon:'📊'},
+  {name:'Marketing_Analytics.csv',size:'1.1 MB',date:'1 hour ago',status:'Analyzed',icon:'📈'},
+  {name:'Business_Plan_2025.pdf',size:'3.8 MB',date:'Yesterday',status:'Analyzed',icon:'📄'},
+  {name:'Sales_Pipeline.docx',size:'0.9 MB',date:'2 days ago',status:'Pending',icon:'📝'},
+  {name:'Competitor_Research.pdf',size:'5.2 MB',date:'3 days ago',status:'Analyzed',icon:'🔍'},
+];
+
+function renderHistory(){
+  document.getElementById('uploadHistory').innerHTML=historyData.map(u=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:0.65rem;border-radius:10px;background:white;">
+      <span style="font-size:1.2rem">${u.icon}</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.name}</div>
+        <div style="font-size:0.72rem;color:var(--text-light)">${u.size} · ${u.date}</div>
+      </div>
+      <span class="badge ${u.status==='Analyzed'?'badge-green':'badge-orange'}" style="font-size:0.7rem">${u.status}</span>
+    </div>`).join('');
+}
+renderHistory();
+
+// Drag & drop
+const zone=document.getElementById('uploadZone');
+['dragenter','dragover'].forEach(e=>zone.addEventListener(e,ev=>{ev.preventDefault();zone.classList.add('dragover');}));
+['dragleave','drop'].forEach(e=>zone.addEventListener(e,ev=>{ev.preventDefault();zone.classList.remove('dragover');}));
+zone.addEventListener('drop',ev=>handleFiles(ev.dataTransfer.files));
+
+function handleFiles(files){
+  if(!files||!files.length) return;
+  const file=files[0];
+  const allowed=['pdf','xlsx','csv','docx'];
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(!allowed.includes(ext)){showToast('Invalid file type. Use PDF, XLSX, CSV, or DOCX','error');return;}
+  startUpload(file);
+}
+
+function startUpload(file){
+  document.getElementById('uploadZone').style.display='none';
+  const prog=document.getElementById('uploadProgress');
+  prog.style.display='block';
+  document.getElementById('uploadFileName').textContent=file.name;
+  let pct=0;
+  const steps=['Uploading file...','Extracting data...','Running AI analysis...','Generating insights...','Finalizing report...'];
+  let step=0;
+  const interval=setInterval(()=>{
+    pct+=Math.random()*18+4;
+    if(pct>100) pct=100;
+    document.getElementById('progressFill').style.width=pct+'%';
+    document.getElementById('progressPct').textContent=Math.round(pct)+'%';
+    if(pct>step*20 && step<steps.length){
+      document.getElementById('uploadStatus').textContent=steps[step];
+      step++;
+    }
+    if(pct>=100){
+      clearInterval(interval);
+      setTimeout(()=>showAnalysis(file.name),600);
+    }
+  },180);
+}
+
+function showAnalysis(fname){
+  document.getElementById('uploadProgress').style.display='none';
+  const res=document.getElementById('analysisResult');
+  res.style.display='block';
+  const insights=[
+    '📈 <strong>Revenue Trend:</strong> Data shows 18.4% revenue growth over the analyzed period.',
+    '⚠️ <strong>Risk Detected:</strong> Customer churn increased 0.4% — re-engagement recommended.',
+    '💡 <strong>Opportunity:</strong> Instagram Ads showing lowest CPC at ₹0.65 — high ROI potential.',
+    '🎯 <strong>Top Performer:</strong> Enterprise plan driving 41% growth — prioritize this segment.',
+    '📊 <strong>Recommendation:</strong> Reallocate 30% of Facebook Ads budget to Google Ads for better ROAS.',
+  ];
+  document.getElementById('analysisContent').innerHTML=insights.map(i=>`<div style="margin-bottom:6px">${i}</div>`).join('');
+  historyData.unshift({name:fname,size:'—',date:'Just now',status:'Analyzed',icon:'📊'});
+  renderHistory();
+  showToast('AI analysis complete!','success');
+}
+
+function resetUpload(){
+  document.getElementById('uploadZone').style.display='block';
+  document.getElementById('analysisResult').style.display='none';
+  document.getElementById('uploadProgress').style.display='none';
+  document.getElementById('progressFill').style.width='0%';
+}
+
+function loadDemoData(){
+  showToast('Loading demo dataset...','info');
+  setTimeout(()=>{
+    startUpload({name:'Demo_Business_Dataset.xlsx',size:1024*1024});
+  },500);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI Reports — Nexus AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--blue-main),var(--blue-navy));display:flex;align-items:center;justify-content:center;color:white;font-size:15px">✦</div>
+    <span style="font-family:var(--font-head);font-weight:800;font-size:1.05rem;color:var(--text-dark)">Nexus<em style="color:var(--blue-navy);font-style:normal">AI</em></span>
+  </div>
+  <nav class="sidebar-nav"><ul>
+    <li><a href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a></li>
+    <li><a href="upload.html"><span class="nav-icon">📁</span>Upload Center</a></li>
+    <li><a href="analytics.html"><span class="nav-icon">📈</span>Analytics</a></li>
+    <li><a href="reports.html" class="active"><span class="nav-icon">📄</span>AI Reports</a></li>
+    <li><a href="chat.html"><span class="nav-icon">💬</span>AI Assistant</a></li>
+    <li><a href="contact.html"><span class="nav-icon">✉️</span>Contact</a></li>
+    <li><a href="index.html"><span class="nav-icon">🏠</span>Home</a></li>
+  </ul></nav>
+</aside>
+
+<nav class="navbar" style="left:240px;">
+  <div><div class="dash-title">AI Reports</div><div class="dash-sub">Generate & download AI-powered business reports</div></div>
+  <div style="display:flex;gap:1rem;align-items:center;">
+    <span class="ai-badge">Gemini Powered</span>
+    <button class="btn btn-primary btn-sm" onclick="generateReport()">✨ Generate Report</button>
+  </div>
+</nav>
+
+<div class="dash-layout"><div class="dash-content">
+
+  <!-- Report Generator -->
+  <div class="grid-2" style="margin-bottom:1.5rem;align-items:start;">
+    <div>
+      <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;">
+        <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1.2rem">⚙️ Configure Report</div>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div class="form-group">
+            <label class="form-label">Report Type</label>
+            <select class="form-input" id="reportType">
+              <option>Executive Summary</option>
+              <option>SWOT Analysis</option>
+              <option>Competitor Analysis</option>
+              <option>Market Research</option>
+              <option>Growth Strategy</option>
+              <option>Financial Analysis</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Business Name</label>
+            <input class="form-input" type="text" id="bizName" value="Nexus Demo Company" placeholder="Your Business Name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Industry</label>
+            <select class="form-input" id="industry">
+              <option>SaaS / Technology</option>
+              <option>E-Commerce</option>
+              <option>Healthcare</option>
+              <option>Finance</option>
+              <option>Retail</option>
+              <option>Marketing Agency</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data Source</label>
+            <select class="form-input" id="dataSource">
+              <option>Demo Dataset</option>
+              <option>Last Upload</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="generateReport()">🤖 Generate AI Report</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Preview -->
+    <div>
+      <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;" id="reportPreview">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem">📄 Report Preview</div>
+          <div id="reportActions" style="display:flex;gap:0.5rem;">
+            <button class="btn btn-outline btn-sm" onclick="downloadReport()">⬇ Download PDF</button>
+            <button class="btn btn-ghost btn-sm" onclick="shareReport()">🔗 Share</button>
+          </div>
+        </div>
+        <div id="reportContent" style="font-size:0.88rem;color:var(--text-mid);line-height:1.7;">
+          <div style="text-align:center;padding:3rem;color:var(--text-light);">
+            <div style="font-size:2.5rem;margin-bottom:1rem">📊</div>
+            <p>Configure and generate a report to preview it here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Reports -->
+  <div class="card" style="padding:1.5rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;">
+      <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem">📁 Saved Reports</div>
+      <input type="text" class="form-input" placeholder="Search reports..." style="width:220px;padding:6px 12px;font-size:0.82rem" oninput="filterReports(this.value)"/>
+    </div>
+    <div style="overflow-x:auto;"><table class="data-table" id="savedReports"></table></div>
+  </div>
+
+</div></div>
+
+<div id="generatingOverlay" style="display:none;position:fixed;inset:0;background:rgba(249,250,251,0.85);backdrop-filter:blur(8px);z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;">
+  <div class="spinner" style="width:52px;height:52px;border-width:4px;"></div>
+  <div style="font-family:var(--font-head);font-weight:700;font-size:1.1rem;color:var(--text-dark)" id="genStatus">Analyzing business data...</div>
+  <div style="color:var(--text-light);font-size:0.85rem">Powered by Gemini AI</div>
+</div>
+
+<div class="toast-container"></div>
+<script src="main.js"></script>
+<script>
+const savedReportsData=[
+  {name:'Q4 Executive Summary',type:'Executive Summary',date:'2025-05-08',size:'1.2 MB',status:'Ready'},
+  {name:'SWOT Analysis - Growth Plan',type:'SWOT Analysis',date:'2025-05-07',size:'0.8 MB',status:'Ready'},
+  {name:'Digital Marketing Analysis',type:'Market Research',date:'2025-05-06',size:'2.1 MB',status:'Ready'},
+  {name:'Enterprise Growth Strategy',type:'Growth Strategy',date:'2025-05-05',size:'1.5 MB',status:'Ready'},
+  {name:'Competitor Landscape 2025',type:'Competitor Analysis',date:'2025-05-04',size:'3.2 MB',status:'Processing'},
+];
+
+function renderSavedReports(data){
+  document.getElementById('savedReports').innerHTML=`
+    <thead><tr>${['Report Name','Type','Date','Size','Status','Actions'].map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${data.map(r=>`<tr>
+      <td><strong>📄 ${r.name}</strong></td>
+      <td><span class="badge badge-blue">${r.type}</span></td>
+      <td style="color:var(--text-light)">${r.date}</td>
+      <td>${r.size}</td>
+      <td><span class="badge ${r.status==='Ready'?'badge-green':'badge-orange'}">${r.status}</span></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="downloadReport('${r.name}')">⬇</button></td>
+    </tr>`).join('')}</tbody>`;
+}
+renderSavedReports(savedReportsData);
+
+function filterReports(q){
+  renderSavedReports(savedReportsData.filter(r=>r.name.toLowerCase().includes(q.toLowerCase())||r.type.toLowerCase().includes(q.toLowerCase())));
+}
+
+const reportTemplates={
+  'Executive Summary':{
+    title:'📊 Executive Summary Report',
+    sections:[
+      {h:'Business Overview',body:'Nexus Demo Company operates in the SaaS / Technology sector with demonstrated strong performance across all key metrics. Total revenue reached ₹1,05,000 this period, representing an 18.4% increase quarter-over-quarter.'},
+      {h:'Key Performance Highlights',body:'• Revenue Growth: +18.4% QoQ\n• Customer Base: 4,289 active users (+12.1%)\n• Conversion Rate: 6.8% (industry avg: 3.2%)\n• Customer Churn: 2.1% (below industry avg of 5%)'},
+      {h:'Top Revenue Driver',body:'Enterprise plan showing 41% growth — highest-performing segment. Pro Plan maintaining steady 22% growth with strong retention metrics.'},
+      {h:'Strategic Recommendations',body:'1. Prioritize Enterprise segment with dedicated CSM\n2. Launch retargeting for Starter plan to reduce churn\n3. Reallocate ₹4,000 from Bing Ads to Instagram\n4. Test premium tier pricing at ₹4,999/month'},
+    ]
+  },
+  'SWOT Analysis':{
+    title:'🔍 SWOT Analysis Report',
+    sections:[
+      {h:'💪 Strengths',body:'• 6.8% conversion rate (2x industry average)\n• Strong enterprise growth (+41%)\n• Diversified ad portfolio across 4 platforms\n• Low churn rate (2.1%) compared to industry (5%)'},
+      {h:'⚠️ Weaknesses',body:'• Starter plan churn increasing (+0.4%)\n• Bing Ads underperforming (ROAS 3.2x)\n• Limited market coverage in Tier-2 cities\n• Dependency on Google Ads (43% of budget)'},
+      {h:'🌟 Opportunities',body:'• Instagram CPC at ₹0.65 — high ROI potential\n• Enterprise segment momentum suggests premium tier\n• Video ad formats untested — potential CTR uplift\n• Annual billing conversion could boost ARR 18%'},
+      {h:'🛡️ Threats',body:'• Rising Google Ads CPC trending upward\n• New entrants in SMB analytics space\n• Privacy regulations limiting ad targeting\n• Potential economic slowdown affecting SMB budgets'},
+    ]
+  }
+};
+
+function generateReport(){
+  const type=document.getElementById('reportType').value;
+  const overlay=document.getElementById('generatingOverlay');
+  overlay.style.display='flex';
+  const steps=['Analyzing business data...','Extracting key metrics...','Generating AI insights...','Structuring report...','Finalizing content...'];
+  let i=0;
+  const interval=setInterval(()=>{
+    if(i<steps.length) document.getElementById('genStatus').textContent=steps[i++];
+    else{
+      clearInterval(interval);
+      overlay.style.display='none';
+      renderReport(type);
+      showToast('Report generated successfully!','success');
+    }
+  },700);
+}
+
+function renderReport(type){
+  const tpl=reportTemplates[type]||reportTemplates['Executive Summary'];
+  const biz=document.getElementById('bizName').value||'Your Company';
+  const html=`
+    <div style="border-bottom:2px solid var(--blue-ice);padding-bottom:1rem;margin-bottom:1.2rem;">
+      <div class="ai-badge" style="margin-bottom:0.5rem">AI Generated · ${new Date().toLocaleDateString()}</div>
+      <h2 style="font-family:var(--font-head);font-size:1.2rem;font-weight:800;color:var(--text-dark)">${tpl.title}</h2>
+      <div style="color:var(--text-light);font-size:0.8rem;margin-top:4px">${biz} · ${document.getElementById('industry').value}</div>
+    </div>
+    ${tpl.sections.map(s=>`
+      <div style="margin-bottom:1.2rem;">
+        <h3 style="font-family:var(--font-head);font-weight:700;font-size:0.92rem;color:var(--text-dark);margin-bottom:6px">${s.h}</h3>
+        <p style="font-size:0.85rem;color:var(--text-mid);line-height:1.7;white-space:pre-line">${s.body}</p>
+      </div>`).join('')}
+    <div style="background:var(--blue-ice);border-radius:10px;padding:1rem;margin-top:1rem;">
+      <strong style="font-size:0.85rem;color:var(--blue-deep)">✦ Generated by Nexus AI · Powered by Gemini</strong>
+    </div>`;
+  document.getElementById('reportContent').innerHTML=html;
+  // Save to list
+  savedReportsData.unshift({name:document.getElementById('bizName').value+' – '+type,type,date:new Date().toISOString().slice(0,10),size:'1.0 MB',status:'Ready'});
+  renderSavedReports(savedReportsData);
+}
+
+function downloadReport(name){
+  showToast(`Downloading "${name||'Report'}.pdf"...`,'info');
+  setTimeout(()=>showToast('PDF downloaded successfully!','success'),1800);
+}
+function shareReport(){
+  navigator.clipboard&&navigator.clipboard.writeText(window.location.href);
+  showToast('Report link copied to clipboard!','success');
+}
+</script>
+</body>
+</html>

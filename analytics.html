@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Analytics — Nexus AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--blue-main),var(--blue-navy));display:flex;align-items:center;justify-content:center;color:white;font-size:15px">✦</div>
+    <span style="font-family:var(--font-head);font-weight:800;font-size:1.05rem;color:var(--text-dark)">Nexus<em style="color:var(--blue-navy);font-style:normal">AI</em></span>
+  </div>
+  <nav class="sidebar-nav"><ul>
+    <li><a href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a></li>
+    <li><a href="upload.html"><span class="nav-icon">📁</span>Upload Center</a></li>
+    <li><a href="analytics.html" class="active"><span class="nav-icon">📈</span>Analytics</a></li>
+    <li><a href="reports.html"><span class="nav-icon">📄</span>AI Reports</a></li>
+    <li><a href="chat.html"><span class="nav-icon">💬</span>AI Assistant</a></li>
+    <li><a href="contact.html"><span class="nav-icon">✉️</span>Contact</a></li>
+    <li><a href="index.html"><span class="nav-icon">🏠</span>Home</a></li>
+  </ul></nav>
+</aside>
+
+<nav class="navbar" style="left:240px;">
+  <div><div class="dash-title">Analytics</div><div class="dash-sub">Digital marketing & product analytics · Demo data</div></div>
+  <div style="display:flex;gap:1rem;align-items:center;">
+    <select class="form-input" style="padding:6px 12px;font-size:0.82rem;width:auto" id="dateRange">
+      <option>Last 30 Days</option><option>Last 90 Days</option><option>Last Year</option>
+    </select>
+    <button class="btn btn-primary btn-sm" onclick="refreshData()">↻ Refresh</button>
+  </div>
+</nav>
+
+<div class="dash-layout"><div class="dash-content">
+
+  <!-- Tabs -->
+  <div data-tabs style="margin-bottom:1.5rem;">
+    <div class="tab-nav" style="max-width:460px;" id="tabNav">
+      <button class="tab-btn active" data-tab="marketing" onclick="switchTab('marketing',this)">📣 Marketing</button>
+      <button class="tab-btn" data-tab="product" onclick="switchTab('product',this)">📦 Product</button>
+      <button class="tab-btn" data-tab="funnel" onclick="switchTab('funnel',this)">🎯 Funnel</button>
+    </div>
+
+    <!-- MARKETING TAB -->
+    <div id="tab-marketing">
+      <div class="grid-4" style="margin:1.5rem 0;" id="mktKpis"></div>
+      <div class="grid-2" style="margin-bottom:1.5rem;">
+        <div class="card" style="padding:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1rem">Ad Spend Distribution</div>
+          <canvas id="adSpendChart" height="220"></canvas>
+        </div>
+        <div class="card" style="padding:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1rem">ROAS by Platform</div>
+          <canvas id="roasChart" height="220"></canvas>
+        </div>
+      </div>
+      <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem">Campaign Details</div>
+          <div class="ai-badge">AI Optimized</div>
+        </div>
+        <div style="overflow-x:auto;"><table class="data-table" id="campTable"></table></div>
+      </div>
+      <div class="card" style="padding:1.5rem;background:var(--blue-ice);">
+        <div style="font-family:var(--font-head);font-weight:700;margin-bottom:0.75rem">🤖 AI Optimization Suggestions</div>
+        <div id="aiSuggestions" style="display:flex;flex-direction:column;gap:0.6rem;"></div>
+      </div>
+    </div>
+
+    <!-- PRODUCT TAB -->
+    <div id="tab-product" style="display:none;">
+      <div class="grid-4" style="margin:1.5rem 0;" id="prodKpis"></div>
+      <div class="grid-2" style="margin-bottom:1.5rem;">
+        <div class="card" style="padding:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1rem">Revenue by Product</div>
+          <canvas id="prodRevChart" height="240"></canvas>
+        </div>
+        <div class="card" style="padding:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1rem">A/B Test Results</div>
+          <div id="abTests" style="display:flex;flex-direction:column;gap:1rem;margin-top:0.5rem;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FUNNEL TAB -->
+    <div id="tab-funnel" style="display:none;">
+      <div class="card" style="padding:1.5rem;margin-top:1.5rem;">
+        <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1.5rem">Conversion Funnel</div>
+        <div id="funnelViz" style="display:flex;flex-direction:column;gap:1rem;"></div>
+      </div>
+      <div class="grid-2" style="margin-top:1.5rem;">
+        <div class="card" style="padding:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:1rem">Traffic Sources</div>
+          <canvas id="trafficChart" height="220"></canvas>
+        </div>
+        <div class="card" style="padding:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:0.95rem;margin-bottom:0.75rem">Revenue Forecast</div>
+          <canvas id="forecastChart" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div></div>
+
+<div class="toast-container"></div>
+<script src="main.js"></script>
+<script>
+function switchTab(name,btn){
+  document.querySelectorAll('[id^="tab-"]').forEach(t=>t.style.display='none');
+  document.getElementById('tab-'+name).style.display='block';
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Marketing KPIs
+const mktKpis=[
+  {icon:'💸',label:'Total Ad Spend',value:'₹65,500',change:'+8%',up:true},
+  {icon:'👆',label:'Total Clicks',value:'60,600',change:'+14%',up:true},
+  {icon:'🔄',label:'Conversions',value:'1,115',change:'+22%',up:true},
+  {icon:'📊',label:'Avg ROAS',value:'5.1x',change:'+0.7x',up:true},
+];
+document.getElementById('mktKpis').innerHTML=mktKpis.map(k=>`
+  <div class="kpi-card">
+    <div class="kpi-icon">${k.icon}</div>
+    <div class="kpi-value">${k.value}</div>
+    <div class="kpi-label">${k.label}</div>
+    <div class="kpi-change ${k.up?'up':'down'}">${k.up?'▲':'▼'} ${k.change}</div>
+  </div>`).join('');
+
+// Ad spend chart
+new Chart(document.getElementById('adSpendChart'),{
+  type:'pie',
+  data:{labels:['Google Ads','Facebook Ads','Instagram Ads','Bing Ads'],
+    datasets:[{data:[28000,19000,12000,6500],backgroundColor:['#3D6A9A','#6B8FB3','#A7C7E7','#D6EAF8'],borderWidth:0}]},
+  options:{responsive:true,plugins:{legend:{position:'right'}}}
+});
+
+// ROAS chart
+new Chart(document.getElementById('roasChart'),{
+  type:'bar',
+  data:{labels:['Google','Facebook','Instagram','Bing'],
+    datasets:[{label:'ROAS',data:[6.8,4.9,5.3,3.2],backgroundColor:['#3D6A9A','#6B8FB3','#A7C7E7','#D6EAF8'],borderRadius:8}]},
+  options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:'rgba(167,199,231,0.2)'}}}}
+});
+
+// Campaign table
+const camps=[
+  {name:'Google Ads',spend:'₹28,000',clicks:'14,200',ctr:'4.2%',cpc:'₹1.97',conv:482,roas:'6.8x',status:'Active'},
+  {name:'Facebook Ads',spend:'₹19,000',clicks:'22,100',ctr:'2.8%',cpc:'₹0.86',conv:311,roas:'4.9x',status:'Active'},
+  {name:'Instagram Ads',spend:'₹12,000',clicks:'18,400',ctr:'3.5%',cpc:'₹0.65',conv:224,roas:'5.3x',status:'Active'},
+  {name:'Bing Ads',spend:'₹6,500',clicks:'5,900',ctr:'3.1%',cpc:'₹1.10',conv:98,roas:'3.2x',status:'Paused'},
+];
+document.getElementById('campTable').innerHTML=`
+  <thead><tr>${['Campaign','Spend','Clicks','CTR','CPC','Conversions','ROAS','Status'].map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+  <tbody>${camps.map(c=>`<tr>
+    <td><strong>${c.name}</strong></td><td>${c.spend}</td><td>${c.clicks}</td>
+    <td><span class="badge badge-blue">${c.ctr}</span></td><td>${c.cpc}</td><td>${c.conv}</td>
+    <td><span class="badge badge-green">${c.roas}</span></td>
+    <td><span class="badge ${c.status==='Active'?'badge-green':'badge-orange'}">${c.status}</span></td>
+  </tr>`).join('')}</tbody>`;
+
+// AI suggestions
+const suggs=['💡 Increase Google Ads budget by 20% — highest ROAS at 6.8x','📉 Bing Ads underperforming — pause and reallocate ₹4,000 to Instagram','🎯 Instagram CTR improved 3.5% — launch retargeting campaign','⚡ Test video ads on Facebook — lower CPC potential with Story format'];
+document.getElementById('aiSuggestions').innerHTML=suggs.map(s=>`
+  <div style="padding:0.65rem 0.85rem;background:white;border-radius:10px;font-size:0.85rem;color:var(--text-mid)">${s}</div>`).join('');
+
+// Product KPIs
+const prodKpis=[
+  {icon:'💎',label:'Pro Plan Revenue',value:'₹42,000',change:'+22%',up:true},
+  {icon:'🚀',label:'Enterprise Revenue',value:'₹35,000',change:'+41%',up:true},
+  {icon:'📦',label:'Total Units Sold',value:'1,324',change:'+11%',up:true},
+  {icon:'🔄',label:'Avg. LTV',value:'₹8,400',change:'+6%',up:true},
+];
+document.getElementById('prodKpis').innerHTML=prodKpis.map(k=>`
+  <div class="kpi-card">
+    <div class="kpi-icon">${k.icon}</div>
+    <div class="kpi-value">${k.value}</div>
+    <div class="kpi-label">${k.label}</div>
+    <div class="kpi-change ${k.up?'up':'down'}">${k.up?'▲':'▼'} ${k.change}</div>
+  </div>`).join('');
+
+// Product revenue chart
+new Chart(document.getElementById('prodRevChart'),{
+  type:'bar',
+  data:{labels:['Pro Plan','Starter','Enterprise','Add-ons'],
+    datasets:[{label:'Revenue (₹)',data:[42000,18000,35000,8500],backgroundColor:'#6B8FB3',borderRadius:8}]},
+  options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:'rgba(167,199,231,0.2)'}}}}
+});
+
+// A/B Tests
+const abTests=[
+  {name:'Landing Page CTA',varA:'Sign Up Free',varB:'Start AI Analysis',winner:'B',lift:'+34% conv'},
+  {name:'Pricing Display',varA:'Monthly pricing',varB:'Annual with discount',winner:'B',lift:'+18% ARR'},
+  {name:'Email Subject',varA:'Check your report',varB:'Your AI insights are ready',winner:'B',lift:'+42% open'},
+];
+document.getElementById('abTests').innerHTML=abTests.map(t=>`
+  <div style="padding:1rem;background:var(--blue-ice);border-radius:12px;">
+    <div style="font-weight:700;font-size:0.85rem;color:var(--text-dark);margin-bottom:8px">${t.name}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <span class="badge badge-blue">A: ${t.varA}</span>
+      <span class="badge ${t.winner==='B'?'badge-green':'badge-blue'}">B: ${t.varB} ${t.winner==='B'?'✓':''}</span>
+      <span class="badge badge-green">↑ ${t.lift}</span>
+    </div>
+  </div>`).join('');
+
+// Funnel
+const funnel=[
+  {stage:'Website Visitors',count:48200,pct:100,color:'#3D6A9A'},
+  {stage:'Landing Page Views',count:32100,pct:67,color:'#6B8FB3'},
+  {stage:'Sign Up Started',count:12400,pct:26,color:'#A7C7E7'},
+  {stage:'Trial Activated',count:5800,pct:12,color:'#D6EAF8'},
+  {stage:'Paid Conversion',count:3270,pct:6.8,color:'#EEF7FF'},
+];
+document.getElementById('funnelViz').innerHTML=funnel.map(f=>`
+  <div>
+    <div style="display:flex;justify-content:space-between;font-size:0.82rem;color:var(--text-mid);margin-bottom:4px">
+      <span style="font-weight:600">${f.stage}</span>
+      <span>${f.count.toLocaleString()} <strong style="color:var(--blue-deep)">(${f.pct}%)</strong></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${f.pct}%;background:${f.color}"></div></div>
+  </div>`).join('');
+
+// Traffic sources
+new Chart(document.getElementById('trafficChart'),{
+  type:'doughnut',
+  data:{labels:['Organic','Paid','Social','Referral','Direct'],
+    datasets:[{data:[38,28,18,10,6],backgroundColor:['#3D6A9A','#6B8FB3','#A7C7E7','#D6EAF8','#EEF7FF'],borderWidth:0}]},
+  options:{responsive:true,plugins:{legend:{position:'right'}},cutout:'62%'}
+});
+
+// Forecast chart
+const fMonths=['Jan','Feb','Mar','Apr','May','Jun'];
+new Chart(document.getElementById('forecastChart'),{
+  type:'line',
+  data:{labels:[...['Oct','Nov','Dec'],...fMonths],
+    datasets:[
+      {label:'Actual',data:[88000,92000,105000,null,null,null,null,null,null],borderColor:'#6B8FB3',tension:0.4,pointRadius:4},
+      {label:'Forecast',data:[null,null,105000,112000,118000,126000,133000,141000,150000],borderColor:'#A7C7E7',borderDash:[6,3],tension:0.4,pointRadius:3},
+    ]},
+  options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid:{color:'rgba(167,199,231,0.15)'}}}}
+});
+
+function refreshData(){
+  showToast('Analytics refreshed with latest data','success');
+}
+</script>
+</body>
+</html>
