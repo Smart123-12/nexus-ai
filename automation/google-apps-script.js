@@ -13,7 +13,7 @@
 const CONFIG = {
   SHEET_ID: 'YOUR_GOOGLE_SHEET_ID',          // Replace with your Google Sheet ID
   ADMIN_EMAIL: 'smitparmar280@gmail.com',     // Your admin email
-  GEMINI_API_KEY: 'AIzaSyDIoT3KzTJK9CTOSR8o2nMf28WHERWzqes',      // Gemini API Key
+  GEMINI_API_KEY: PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '', // Set in Script Properties
   SHEET_NAMES: {
     contacts: 'Contacts',
     leads: 'Leads',
@@ -145,6 +145,9 @@ Provide 3 key insights and 2 recommendations in 150 words.`;
 
   let reportContent = '';
   try {
+    if (!CONFIG.GEMINI_API_KEY) {
+      throw new Error('Missing GEMINI_API_KEY in Script Properties');
+    }
     const response = UrlFetchApp.fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${CONFIG.GEMINI_API_KEY}`,
       {
