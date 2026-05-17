@@ -79,7 +79,7 @@ nexusai/
 3. Replace in CONFIG:
    - `SHEET_ID`: Create a Google Sheet → copy ID from URL
    - `ADMIN_EMAIL`: `smitparmar280@gmail.com`
-4. Set Gemini key in **Project Settings → Script Properties**:
+4. Set Gemini key in **Project Settings → Script Properties** (gear icon in the left sidebar):
    - Key: `GEMINI_API_KEY`
    - Value: your Gemini key
 5. Run `setup()` function once (authorize permissions)
