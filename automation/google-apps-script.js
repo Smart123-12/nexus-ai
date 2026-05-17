@@ -13,7 +13,7 @@
 const CONFIG = {
   SHEET_ID: 'YOUR_GOOGLE_SHEET_ID',          // Replace with your Google Sheet ID
   ADMIN_EMAIL: 'smitparmar280@gmail.com',     // Your admin email
-  GEMINI_API_KEY: PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '', // Set in Script Properties
+  GEMINI_API_KEY: PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY'), // Set in Script Properties
   SHEET_NAMES: {
     contacts: 'Contacts',
     leads: 'Leads',
