@@ -13,7 +13,6 @@
 const CONFIG = {
   SHEET_ID: 'YOUR_GOOGLE_SHEET_ID',          // Replace with your Google Sheet ID
   ADMIN_EMAIL: 'smitparmar280@gmail.com',     // Your admin email
-  GEMINI_API_KEY: 'AIzaSyDIoT3KzTJK9CTOSR8o2nMf28WHERWzqes',      // Gemini API Key
   SHEET_NAMES: {
     contacts: 'Contacts',
     leads: 'Leads',
@@ -21,6 +20,10 @@ const CONFIG = {
     analytics: 'Analytics'
   }
 };
+
+function getGeminiApiKey() {
+  return PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
+}
 
 // ─── WEB APP ENTRY POINT ──────────────────────────────────────
 function doPost(e) {
@@ -145,8 +148,12 @@ Provide 3 key insights and 2 recommendations in 150 words.`;
 
   let reportContent = '';
   try {
+    const geminiApiKey = getGeminiApiKey();
+    if (!geminiApiKey) {
+      throw new Error('GEMINI_API_KEY not found in Script Properties. Please add it via Project Settings → Script Properties.');
+    }
     const response = UrlFetchApp.fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${CONFIG.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`,
       {
         method: 'post',
         contentType: 'application/json',

@@ -79,12 +79,14 @@ nexusai/
 3. Replace in CONFIG:
    - `SHEET_ID`: Create a Google Sheet → copy ID from URL
    - `ADMIN_EMAIL`: `smitparmar280@gmail.com`
-   - `GEMINI_API_KEY`: your Gemini key
-4. Run `setup()` function once (authorize permissions)
-5. **Deploy → New Deployment → Web App**
+4. Set Gemini key in **Project Settings → Script Properties** (gear icon in the left sidebar):
+   - Key: `GEMINI_API_KEY`
+   - Value: your Gemini key
+5. Run `setup()` function once (authorize permissions)
+6. **Deploy → New Deployment → Web App**
    - Execute as: **Me**
    - Who has access: **Anyone**
-6. Copy Web App URL → Add to Render env: `GOOGLE_SCRIPT_URL`
+7. Copy Web App URL → Add to Render env: `GOOGLE_SCRIPT_URL`
 
 ---
 
