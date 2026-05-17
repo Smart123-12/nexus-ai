@@ -146,7 +146,7 @@ Provide 3 key insights and 2 recommendations in 150 words.`;
   let reportContent = '';
   try {
     if (!CONFIG.GEMINI_API_KEY) {
-      throw new Error('Missing GEMINI_API_KEY in Script Properties');
+      throw new Error('GEMINI_API_KEY not found in Script Properties. Please add it via Project Settings → Script Properties.');
     }
     const response = UrlFetchApp.fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${CONFIG.GEMINI_API_KEY}`,
